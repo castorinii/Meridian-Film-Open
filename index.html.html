@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MERIDIAN — Audiovisual Production</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#100F0D;
+  --canvas:#F2EDE4;
+  --gold:#C49A38;
+  --gold-dim:rgba(196,154,56,0.14);
+  --stone:#8A8480;
+  --smoke:#1A1916;
+  --dark-s:#191714;
+  --ease:cubic-bezier(0.22,1,0.36,1);
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',system-ui,sans-serif;background:var(--ink);color:var(--canvas);overflow-x:hidden;line-height:1}
+
+/* REVEAL */
+.rev{opacity:0;transform:translateY(26px);transition:opacity .85s var(--ease),transform .85s var(--ease)}
+.rev.in{opacity:1;transform:translateY(0)}
+.d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}.d4{transition-delay:.4s}
+
+/* NAV */
+.nav{position:fixed;top:0;left:0;right:0;z-index:999;display:flex;justify-content:space-between;align-items:center;padding:0 56px;height:72px;transition:background .4s,border-color .4s;border-bottom:1px solid transparent}
+.nav.s{background:rgba(16,15,13,.95);border-bottom-color:var(--gold-dim);backdrop-filter:blur(14px)}
+.brand{display:inline-block;position:relative;padding-top:10px;text-decoration:none}
+.brand::before{content:'';position:absolute;top:0;left:-3px;right:-3px;height:1px;background:var(--gold)}
+.brand-text{font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;letter-spacing:.35em;text-transform:uppercase;color:var(--canvas)}
+.nav-links{display:flex;gap:44px;list-style:none}
+.nav-links a{font-size:11px;font-weight:400;letter-spacing:.18em;text-transform:uppercase;color:var(--stone);text-decoration:none;transition:color .3s}
+.nav-links a:hover{color:var(--gold)}
+.nav-cta{font-size:11px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);border:1px solid var(--gold-dim);padding:10px 24px;text-decoration:none;transition:all .3s}
+.nav-cta:hover{background:var(--gold);color:var(--ink);border-color:var(--gold)}
+
+/* HERO */
+.hero{min-height:100vh;background:var(--ink);display:flex;flex-direction:column;justify-content:flex-end;padding:0 56px 72px;padding-top:72px;position:relative;overflow:hidden}
+.hero-glow{position:absolute;width:800px;height:600px;border-radius:50%;background:radial-gradient(ellipse,rgba(196,154,56,.045) 0%,transparent 70%);top:10%;right:-15%;pointer-events:none}
+.hero-glow2{position:absolute;width:500px;height:400px;border-radius:50%;background:radial-gradient(ellipse,rgba(196,154,56,.02) 0%,transparent 70%);bottom:20%;left:-10%;pointer-events:none}
+.hero-eyebrow{font-size:10.5px;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);font-weight:500;margin-bottom:40px}
+.hero-h1{font-family:'Cormorant Garamond',Georgia,serif;font-size:clamp(76px,10.5vw,154px);font-weight:300;font-style:italic;line-height:.9;color:var(--canvas);max-width:1100px;margin-bottom:52px;letter-spacing:-.01em}
+.hero-divider{display:flex;align-items:center;gap:24px;margin-bottom:52px}
+.hero-div-line{width:64px;height:1px;background:var(--gold)}
+.hero-div-txt{font-size:10.5px;letter-spacing:.25em;text-transform:uppercase;color:var(--stone)}
+.hero-bottom{display:flex;justify-content:space-between;align-items:flex-end;border-top:1px solid rgba(255,255,255,.055);padding-top:40px;gap:40px}
+.hero-desc{font-size:15.5px;font-weight:300;color:var(--stone);line-height:1.8;max-width:420px}
+.hero-desc strong{color:rgba(242,237,228,.8);font-weight:300}
+.hero-loc{text-align:right}
+.hero-loc-label{font-size:10px;letter-spacing:.25em;text-transform:uppercase;color:rgba(138,132,128,.6);display:block;margin-bottom:6px}
+.hero-loc-place{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--stone);display:block;line-height:2.1}
+.hero-scroll{position:absolute;bottom:28px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;opacity:.35}
+.hero-scroll-line{width:1px;height:40px;background:var(--stone);animation:scrollDown 2s ease-in-out infinite}
+.hero-scroll-txt{font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--stone)}
+@keyframes scrollDown{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}50.01%{transform:scaleY(1);transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+
+/* TICKER */
+.ticker{background:var(--smoke);padding:14px 0;overflow:hidden;border-top:1px solid var(--gold-dim);border-bottom:1px solid var(--gold-dim)}
+.ticker-track{display:flex;white-space:nowrap;animation:tickerRoll 45s linear infinite}
+.ticker-item{display:inline-flex;align-items:center;gap:44px;padding:0 44px}
+.ticker-txt{font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--stone)}
+.ticker-dot{width:3px;height:3px;border-radius:50%;background:var(--gold);flex-shrink:0}
+@keyframes tickerRoll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* WORK */
+.work{background:var(--canvas);padding:112px 56px;color:var(--ink)}
+.sec-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:64px}
+.sec-label{display:flex;align-items:center;gap:18px}
+.sec-label-line{width:32px;height:1px;background:rgba(10,9,8,.25)}
+.sec-label-txt{font-size:10.5px;letter-spacing:.28em;text-transform:uppercase;color:var(--stone)}
+.sec-link{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink);font-weight:500;text-decoration:none;display:flex;align-items:center;gap:10px;transition:gap .35s}
+.sec-link:hover{gap:18px}
+.sec-link::after{content:'→';font-size:14px}
+.work-grid{display:grid;grid-template-columns:1.42fr 1fr;grid-template-rows:1fr 1fr;gap:3px}
+.wcard{position:relative;overflow:hidden;background:var(--ink);cursor:pointer}
+.wcard:first-child{grid-row:1/3}
+.wthumb{width:100%;height:100%;min-height:285px;position:relative;transition:transform .75s var(--ease)}
+.wcard:first-child .wthumb{min-height:600px}
+.wcard:hover .wthumb{transform:scale(1.04)}
+.wt-inner{position:absolute;inset:0}
+.wt1{background:linear-gradient(148deg,#091420 0%,#0d1510 42%,#0a0c0d 100%)}
+.wt2{background:linear-gradient(205deg,#100c1a 0%,#0d0c10 52%,#0a0f15 100%)}
+.wt3{background:linear-gradient(128deg,#1a0e0a 0%,#140c08 50%,#0d0c0b 100%)}
+.wt-glow1{position:absolute;inset:0;background:radial-gradient(ellipse at 28% 62%,rgba(28,115,95,.13) 0%,transparent 58%)}
+.wt-glow2{position:absolute;inset:0;background:radial-gradient(ellipse at 68% 38%,rgba(72,54,130,.13) 0%,transparent 58%)}
+.wt-glow3{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 28%,rgba(175,95,35,.11) 0%,transparent 58%)}
+.woverlay{position:absolute;inset:0;background:linear-gradient(0deg,rgba(0,0,0,.72) 0%,rgba(0,0,0,.1) 42%,transparent 72%);display:flex;flex-direction:column;justify-content:flex-end;padding:32px 36px;transition:background .4s}
+.wcard:hover .woverlay{background:linear-gradient(0deg,rgba(0,0,0,.82) 0%,rgba(0,0,0,.18) 42%,transparent 72%)}
+.wcat{font-size:10px;letter-spacing:.25em;text-transform:uppercase;color:var(--gold);margin-bottom:10px}
+.wtitle{font-family:'Cormorant Garamond',serif;font-size:27px;font-weight:400;color:var(--canvas);line-height:1.15;margin-bottom:6px}
+.wcard:first-child .wtitle{font-size:38px}
+.wclient{font-size:12px;color:rgba(242,237,228,.48);font-weight:300}
+.wplay{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:52px;height:52px;border:1px solid rgba(255,255,255,.25);border-radius:50%;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .35s}
+.wcard:hover .wplay{opacity:1}
+.wplay-tri{width:0;height:0;border-top:10px solid transparent;border-bottom:10px solid transparent;border-left:18px solid rgba(255,255,255,.7);margin-left:3px}
+
+/* MANIFESTO */
+.manifesto{background:var(--ink);padding:168px 56px;position:relative;overflow:hidden}
+.manifesto-bg{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 50%,rgba(196,154,56,.032) 0%,transparent 70%);pointer-events:none}
+.manifesto-inner{max-width:980px;margin:0 auto;text-align:center}
+.manifesto-label{font-size:10.5px;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);font-weight:500;margin-bottom:48px;display:block}
+.manifesto-q{font-family:'Cormorant Garamond',serif;font-size:clamp(34px,4.6vw,64px);font-weight:300;font-style:italic;color:var(--canvas);line-height:1.32;margin-bottom:56px}
+.manifesto-q em{color:var(--gold);font-style:normal;font-weight:400}
+.manifesto-rule{width:48px;height:1px;background:var(--gold);margin:0 auto 40px}
+.manifesto-sub{font-size:14px;font-weight:300;color:var(--stone);letter-spacing:.06em;line-height:1.85}
+
+/* VALUES */
+.values{background:var(--canvas);padding:112px 56px;color:var(--ink)}
+.val-intro{display:grid;grid-template-columns:1fr 1fr;gap:80px;margin-bottom:80px;align-items:end}
+.val-title{font-family:'Cormorant Garamond',serif;font-size:clamp(44px,5.2vw,74px);font-weight:300;line-height:1.1;color:var(--ink)}
+.val-text{font-size:14.5px;font-weight:300;color:var(--stone);line-height:1.88}
+.val-list{border-top:1px solid rgba(16,15,13,.1)}
+.vrow{display:grid;grid-template-columns:72px 1fr 1.15fr;gap:52px;align-items:start;padding:36px 0;border-bottom:1px solid rgba(16,15,13,.1);transition:background .35s}
+.vrow:hover{background:rgba(196,154,56,.035);margin:0 -56px;padding-left:56px;padding-right:56px}
+.vnum{font-size:10.5px;letter-spacing:.22em;color:var(--gold);padding-top:6px;font-weight:500}
+.vname{font-family:'Cormorant Garamond',serif;font-size:34px;font-weight:400;color:var(--ink);line-height:1.1}
+.vdesc{font-size:13.5px;font-weight:300;color:var(--stone);line-height:1.78;padding-top:7px}
+
+/* SERVICES */
+.services{background:var(--smoke);padding:112px 56px}
+.srv-hd{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:64px}
+.srv-title{font-family:'Cormorant Garamond',serif;font-size:clamp(44px,5vw,68px);font-weight:300;font-style:italic;color:var(--canvas)}
+.srv-desc{font-size:14px;font-weight:300;color:var(--stone);line-height:1.8;max-width:340px;text-align:right}
+.srv-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:2px}
+.scard{background:var(--dark-s);padding:44px 30px;transition:background .38s;cursor:pointer;border-top:2px solid transparent;transition:background .38s,border-color .38s}
+.scard:hover{background:#201E1B;border-top-color:var(--gold)}
+.scard-line{width:28px;height:1px;background:var(--gold);margin-bottom:44px;transition:width .38s}
+.scard:hover .scard-line{width:48px}
+.scard-name{font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:300;color:var(--canvas);line-height:1.25;margin-bottom:20px}
+.scard-desc{font-size:12px;font-weight:300;color:var(--stone);line-height:1.78}
+
+/* NUMBERS */
+.numbers{background:var(--ink);padding:88px 56px;border-top:1px solid var(--gold-dim);border-bottom:1px solid var(--gold-dim)}
+.num-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0}
+.nitem{padding:40px;border-right:1px solid rgba(255,255,255,.05);text-align:center}
+.nitem:last-child{border-right:none}
+.nval{font-family:'Cormorant Garamond',serif;font-size:68px;font-weight:300;color:var(--canvas);line-height:1;margin-bottom:10px}
+.nval sup{font-size:26px;color:var(--gold);vertical-align:super}
+.nlabel{font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--stone)}
+
+/* ABOUT STRIP */
+.about-strip{background:var(--canvas);padding:80px 56px;color:var(--ink);display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center}
+.about-img{aspect-ratio:4/3;background:linear-gradient(140deg,#0f1a20 0%,#0d1510 50%,#0a0c0d 100%);position:relative;overflow:hidden}
+.about-img-glow{position:absolute;inset:0;background:radial-gradient(ellipse at 40% 40%,rgba(196,154,56,.07) 0%,transparent 60%)}
+.about-label{font-size:10.5px;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);font-weight:500;margin-bottom:32px;display:flex;align-items:center;gap:16px}
+.about-label::before{content:'';display:block;width:28px;height:1px;background:var(--gold)}
+.about-h2{font-family:'Cormorant Garamond',serif;font-size:clamp(36px,4vw,54px);font-weight:300;line-height:1.15;color:var(--ink);margin-bottom:28px}
+.about-p{font-size:14.5px;font-weight:300;color:var(--stone);line-height:1.85;margin-bottom:36px}
+.about-link{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink);font-weight:500;text-decoration:none;display:inline-flex;align-items:center;gap:10px;transition:gap .35s}
+.about-link:hover{gap:18px}
+.about-link::after{content:'→';font-size:14px}
+
+/* CLIENTS */
+.clients{background:var(--smoke);padding:64px 56px;border-top:1px solid var(--gold-dim)}
+.cli-label{font-size:10.5px;letter-spacing:.28em;text-transform:uppercase;color:var(--stone);text-align:center;margin-bottom:48px}
+.cli-logos{display:grid;grid-template-columns:repeat(6,1fr);gap:0}
+.cli-item{display:flex;align-items:center;justify-content:center;padding:24px 20px;border-right:1px solid rgba(255,255,255,.04)}
+.cli-item:last-child{border-right:none}
+.cli-name{font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:rgba(138,132,128,.55);font-weight:500}
+
+/* CONTACT */
+.contact{background:var(--smoke);padding:160px 56px;text-align:center}
+.contact-label{font-size:10.5px;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);font-weight:500;margin-bottom:40px;display:block}
+.contact-h2{font-family:'Cormorant Garamond',serif;font-size:clamp(46px,6.5vw,94px);font-weight:300;font-style:italic;color:var(--canvas);line-height:1.08;margin-bottom:52px}
+.contact-email{display:inline-block;font-size:17px;font-weight:300;letter-spacing:.08em;color:var(--gold);text-decoration:none;margin-bottom:56px;transition:color .3s}
+.contact-email:hover{color:var(--canvas)}
+.contact-info{font-size:13px;font-weight:300;color:var(--stone);margin-top:40px;line-height:1.8}
+.btn{display:inline-block;padding:17px 52px;border:1px solid var(--gold);color:var(--gold);font-size:11px;letter-spacing:.22em;text-transform:uppercase;font-weight:500;text-decoration:none;transition:all .38s;cursor:pointer;background:transparent}
+.btn:hover{background:var(--gold);color:var(--ink)}
+
+/* FOOTER */
+.footer{background:var(--ink);padding:36px 56px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--gold-dim)}
+.foot-brand{display:inline-block;position:relative;padding-top:10px;text-decoration:none}
+.foot-brand::before{content:'';position:absolute;top:0;left:-3px;right:-3px;height:1px;background:var(--gold);opacity:.45}
+.foot-brand-text{font-family:'DM Sans',sans-serif;font-size:11px;font-weight:600;letter-spacing:.35em;text-transform:uppercase;color:var(--canvas)}
+.foot-info{font-size:11px;color:var(--stone);text-align:center;letter-spacing:.07em;line-height:1.8}
+.foot-nav{display:flex;gap:32px;list-style:none}
+.foot-nav a{font-size:11px;color:var(--stone);text-decoration:none;letter-spacing:.12em;transition:color .3s}
+.foot-nav a:hover{color:var(--gold)}
+
+/* MOBILE */
+@media(max-width:900px){
+  .nav-links,.nav-cta{display:none}
+  .nav{padding:0 28px}
+  .hero,.work,.manifesto,.values,.services,.numbers,.about-strip,.clients,.contact,.footer{padding-left:28px;padding-right:28px}
+  .hero-h1{font-size:clamp(56px,12vw,90px)}
+  .hero-bottom{flex-direction:column;gap:24px}
+  .hero-loc{text-align:left}
+  .work-grid{grid-template-columns:1fr;grid-template-rows:auto}
+  .wcard:first-child{grid-row:auto}
+  .val-intro{grid-template-columns:1fr}
+  .srv-grid{grid-template-columns:1fr 1fr}
+  .num-grid{grid-template-columns:1fr 1fr}
+  .about-strip{grid-template-columns:1fr}
+  .cli-logos{grid-template-columns:repeat(3,1fr)}
+  .footer{flex-direction:column;gap:20px;text-align:center}
+}
+</style>
+
+<!-- NAV -->
+<nav class="nav" id="nav">
+  <a href="#top" class="brand"><span class="brand-text">MERIDIAN</span></a>
+  <ul class="nav-links">
+    <li><a href="#work">Work</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#services">Services</a></li>
+  </ul>
+  <a href="#contact" class="nav-cta">Start a project</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="top">
+  <div class="hero-glow"></div>
+  <div class="hero-glow2"></div>
+  <p class="hero-eyebrow rev">Audiovisual Production — Barcelona, Europe & Beyond</p>
+  <h1 class="hero-h1 rev">Every frame,<br>deliberate.</h1>
+  <div class="hero-divider rev d1">
+    <div class="hero-div-line"></div>
+    <span class="hero-div-txt">Crafting images that earn lasting trust</span>
+  </div>
+  <div class="hero-bottom rev d2">
+    <p class="hero-desc">Audiovisual production for brands that <strong>refuse to compromise on quality</strong>. From concept to final cut, nothing leaves our hands unless it is exceptional.</p>
+    <div class="hero-loc">
+      <span class="hero-loc-label">Based in</span>
+      <span class="hero-loc-place">Barcelona</span>
+      <span class="hero-loc-label">Reaching</span>
+      <span class="hero-loc-place">Europe · World</span>
+    </div>
+  </div>
+  <div class="hero-scroll">
+    <div class="hero-scroll-line"></div>
+    <span class="hero-scroll-txt">Scroll</span>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="ticker-track">
+    <div class="ticker-item"><span class="ticker-txt">Brand Films</span><span class="ticker-dot"></span></div>
+    <div class="ticker-item"><span class="ticker-txt">Commercial Production</span><span class="ticker-dot"></span></div>
+    <div class="ticker-item"><span class="ticker-txt">Documentary</span><span class="ticker-dot"></span></div>
+    <div class="ticker-item"><span class="ticker-txt">Events Coverage</span><span class="ticker-dot"></span></div>
+    <div class="ticker-item"><span class="ticker-txt">Motion Design</span><span class="ticker-dot"></span></div>
+    <div class="ticker-item"><span class="ticker-txt">Photography</span><span class="ticker-dot"></span></div>
+    <div class="ticker-item"><span class="ticker-txt">Barcelona · Paris · Amsterdam · London · Berlin · Milan</span><span class="ticker-dot"></span></div>
+    <div class="ticker-item"><span class="ticker-txt">Brand Films</span><span class="ticker-dot"></span></div>
+    <div class="ticker-item"><span class="ticker-txt">Commercial Production</span><span class="ticker-dot"></span></div>
+    <div class="ticker-item"><span class="ticker-txt">Documentary</span><span class="ticker-dot"></span></div>
+    <div class="ticker-item"><span class="ticker-txt">Events Coverage</span><span class="ticker-dot"></span></div>
+    <div class="ticker-item"><span class="ticker-txt">Motion Design</span><span class="ticker-dot"></span></div>
+    <div class="ticker-item"><span class="ticker-txt">Photography</span><span class="ticker-dot"></span></div>
+    <div class="ticker-item"><span class="ticker-txt">Barcelona · Paris · Amsterdam · London · Berlin · Milan</span><span class="ticker-dot"></span></div>
+  </div>
+</div>
+
+<!-- WORK -->
+<section class="work" id="work">
+  <div class="sec-head rev">
+    <div class="sec-label">
+      <div class="sec-label-line"></div>
+      <span class="sec-label-txt">Selected Work</span>
+    </div>
+    <a href="#" class="sec-link">View all projects</a>
+  </div>
+  <div class="work-grid">
+    <div class="wcard rev">
+      <div class="wthumb">
+        <div class="wt-inner wt1"></div>
+        <div class="wt-glow1"></div>
+        <div class="wplay"><div class="wplay-tri"></div></div>
+        <div class="woverlay">
+          <span class="wcat">Brand Film</span>
+          <h3 class="wtitle">Fundación<br>Atlante</h3>
+          <p class="wclient">Environmental non-profit · Spain / Portugal · 2024</p>
+        </div>
+      </div>
+    </div>
+    <div class="wcard rev d1">
+      <div class="wthumb">
+        <div class="wt-inner wt2"></div>
+        <div class="wt-glow2"></div>
+        <div class="wplay"><div class="wplay-tri"></div></div>
+        <div class="woverlay">
+          <span class="wcat">Commercial Campaign</span>
+          <h3 class="wtitle">Vossler AG</h3>
+          <p class="wclient">Swiss precision instruments · Launch campaign</p>
+        </div>
+      </div>
+    </div>
+    <div class="wcard rev d2">
+      <div class="wthumb">
+        <div class="wt-inner wt3"></div>
+        <div class="wt-glow3"></div>
+        <div class="wplay"><div class="wplay-tri"></div></div>
+        <div class="woverlay">
+          <span class="wcat">Fashion Film</span>
+          <h3 class="wtitle">Maison<br>Pelletier</h3>
+          <p class="wclient">Parisian couture house · FW Campaign</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MANIFESTO -->
+<section class="manifesto">
+  <div class="manifesto-bg"></div>
+  <div class="manifesto-inner rev">
+    <span class="manifesto-label">Our Standard</span>
+    <blockquote class="manifesto-q">
+      "We never sacrifice the quality of our work.<br>
+      Not for budget. Not for deadlines.<br>
+      <em>Not for anything.</em>"
+    </blockquote>
+    <div class="manifesto-rule"></div>
+    <p class="manifesto-sub">Founded in Barcelona with a European spirit and a global reach.<br>Built on one belief: great images earn lasting trust.</p>
+  </div>
+</section>
+
+<!-- VALUES -->
+<section class="values" id="about">
+  <div class="val-intro">
+    <h2 class="val-title rev">What we<br>stand for.</h2>
+    <p class="val-text rev d1">Our values are not a marketing statement. They are the criteria by which we make every decision — from who we work with, to how we deliver, to what we are willing to compromise on. Which is nothing.</p>
+  </div>
+  <div class="val-list">
+    <div class="vrow rev">
+      <span class="vnum">01</span>
+      <div class="vname">Trust</div>
+      <p class="vdesc">We say what we mean and deliver what we promise. Every time. Our clients return not because our work is beautiful — though it is — but because they know they can count on us completely.</p>
+    </div>
+    <div class="vrow rev">
+      <span class="vnum">02</span>
+      <div class="vname">Craftsmanship</div>
+      <p class="vdesc">Every frame is intentional. Every cut considered. We approach production with the rigour of a craftsman and the vision of an artist — because the difference between good and extraordinary lives in the details.</p>
+    </div>
+    <div class="vrow rev">
+      <span class="vnum">03</span>
+      <div class="vname">Precision</div>
+      <p class="vdesc">We plan obsessively so we can execute effortlessly. From technical pre-production to the final colour grade, our standards are exacting and our process is built to protect the integrity of the work.</p>
+    </div>
+    <div class="vrow rev">
+      <span class="vnum">04</span>
+      <div class="vname">Courage</div>
+      <p class="vdesc">We tell our clients what their work needs, not just what they want to hear. We push creative boundaries because comfortable is forgettable — and forgettable is not something we are willing to produce.</p>
+    </div>
+    <div class="vrow rev">
+      <span class="vnum">05</span>
+      <div class="vname">Partnership</div>
+      <p class="vdesc">We protect our clients' vision as if it were our own. We are not a vendor — we are a creative partner invested in the outcome. Your success is the only metric that matters to us.</p>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section class="services" id="services">
+  <div class="srv-hd rev">
+    <h2 class="srv-title">The full<br>picture.</h2>
+    <p class="srv-desc">Every service we offer is delivered with the same uncompromising standard of quality.</p>
+  </div>
+  <div class="srv-grid">
+    <div class="scard rev">
+      <div class="scard-line"></div>
+      <h3 class="scard-name">Brand Films</h3>
+      <p class="scard-desc">Cinematic storytelling that communicates your brand's essence with depth and authenticity. Built to endure.</p>
+    </div>
+    <div class="scard rev d1">
+      <div class="scard-line"></div>
+      <h3 class="scard-name">Commercial Production</h3>
+      <p class="scard-desc">TV, digital, and social campaigns that perform as hard as they look. Every platform, every format, every market.</p>
+    </div>
+    <div class="scard rev d2">
+      <div class="scard-line"></div>
+      <h3 class="scard-name">Corporate & Events</h3>
+      <p class="scard-desc">Institutional films, keynote coverage, and event documentation that elevates your professional presence.</p>
+    </div>
+    <div class="scard rev d3">
+      <div class="scard-line"></div>
+      <h3 class="scard-name">Motion Design</h3>
+      <p class="scard-desc">2D and 3D animation, kinetic typography, and graphics that bring ideas to life with visual precision.</p>
+    </div>
+    <div class="scard rev d4">
+      <div class="scard-line"></div>
+      <h3 class="scard-name">Photography</h3>
+      <p class="scard-desc">Editorial, commercial, and product photography. Still images made with the same cinematic rigour as our films.</p>
+    </div>
+  </div>
+</section>
+
+<!-- NUMBERS -->
+<section class="numbers">
+  <div class="num-grid">
+    <div class="nitem rev">
+      <div class="nval">14<sup>+</sup></div>
+      <span class="nlabel">Countries reached</span>
+    </div>
+    <div class="nitem rev d1">
+      <div class="nval">280<sup>+</sup></div>
+      <span class="nlabel">Projects delivered</span>
+    </div>
+    <div class="nitem rev d2">
+      <div class="nval">9</div>
+      <span class="nlabel">Years of craft</span>
+    </div>
+    <div class="nitem rev d3">
+      <div class="nval">100<sup>%</sup></div>
+      <span class="nlabel">Quality. Always.</span>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT STRIP -->
+<section class="about-strip">
+  <div class="about-img rev">
+    <div class="about-img-glow"></div>
+  </div>
+  <div class="rev d1">
+    <p class="about-label">Who we are</p>
+    <h2 class="about-h2">Rooted in Barcelona.<br>Thinking in European.</h2>
+    <p class="about-p">We are a team of directors, producers, and cinematographers who believe that the Mediterranean light, architecture, and creative energy of Barcelona are a competitive advantage — not a limitation. We bring that spirit to every project we take on, wherever in the world it needs to be made.</p>
+    <a href="#contact" class="about-link">Meet the team</a>
+  </div>
+</section>
+
+<!-- CLIENTS -->
+<section class="clients">
+  <p class="cli-label rev">Trusted by</p>
+  <div class="cli-logos rev d1">
+    <div class="cli-item"><span class="cli-name">Inditex</span></div>
+    <div class="cli-item"><span class="cli-name">Nestlé</span></div>
+    <div class="cli-item"><span class="cli-name">Mango</span></div>
+    <div class="cli-item"><span class="cli-name">Puig</span></div>
+    <div class="cli-item"><span class="cli-name">Vueling</span></div>
+    <div class="cli-item"><span class="cli-name">CaixaBank</span></div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact" id="contact">
+  <span class="contact-label rev">Start a conversation</span>
+  <h2 class="contact-h2 rev">Let's create<br>something lasting.</h2>
+  <a href="mailto:hello@meridian.studio" class="contact-email rev">hello@meridian.studio</a><br>
+  <a href="mailto:hello@meridian.studio" class="btn rev">Get in touch</a>
+  <p class="contact-info rev">Barcelona · Europe · World<br>We work with brands globally. All enquiries in English, Spanish, or Catalan.</p>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <a href="#top" class="foot-brand"><span class="foot-brand-text">MERIDIAN</span></a>
+  <p class="foot-info">Audiovisual Production · Barcelona<br>© 2025 Meridian Studio. All rights reserved.</p>
+  <ul class="foot-nav">
+    <li><a href="#">Privacy</a></li>
+    <li><a href="#">Legal</a></li>
+    <li><a href="#">Instagram</a></li>
+    <li><a href="#">LinkedIn</a></li>
+  </ul>
+</footer>
+
+<script>
+const nav=document.getElementById('nav');
+window.addEventListener('scroll',()=>{nav.classList.toggle('s',window.scrollY>80)});
+const obs=new IntersectionObserver((entries)=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');obs.unobserve(e.target)}})},{threshold:.1,rootMargin:'0px 0px -30px 0px'});
+document.querySelectorAll('.rev').forEach(el=>obs.observe(el));
+</script>
+</html>
